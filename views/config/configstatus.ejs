@@ -1,0 +1,93 @@
+<div class="container bg-light mt-5 p-5 shadow">
+    <form id="updateForm">
+        <!-- 공급처 -->
+        <div class="form-group">
+            <label for="configSelect"><strong>공급처</strong></label>
+            <select class="form-control" id="configSelect" name="configSelect">
+                <% data.kConfig.forEach(function(config) { %>
+                    <option value="<%= config.uid %>"><%= config.c_cname %></option>
+                <% }); %>
+            </select>
+        </div>
+        <!-- 숨겨진 f_code 입력 필드의 id를 'f_code_updateForm'으로 변경 -->
+        <input type="hidden" id="f_code_updateForm" name="f_code" value="<%= data.kForm.f_code %>">
+  
+        <!-- 거래처명 -->
+        <div class="form-group">
+          <label for="f_cname"><strong>거래처명</strong></label>
+          <input type="text" class="form-control" id="f_cname" name="f_cname" value="<%= data.kForm.f_cname %>">
+      </div>
+      
+      <!-- 연락처 -->
+      <div class="form-group">
+          <label for="f_tel"><strong>연락처</strong></label>
+          <input type="text" class="form-control" id="f_tel" name="f_tel" value="<%= data.kForm.f_tel %>">
+      </div>
+      
+      <!-- 담당자 -->
+      <div class="form-group">
+          <label for="f_damdang"><strong>담당자</strong></label>
+          <input type="text" class="form-control" id="f_damdang" name="f_damdang" value="<%= data.kForm.f_damdang %>">
+      </div>
+      
+      <!-- 견적일 -->
+      <div class="form-group">
+          <label for="f_date"><strong>견적일</strong></label>
+          <input type="date" class="form-control" id="f_date" name="f_date" value="<%= data.kForm.f_date %>">
+      </div>
+      
+      <!-- 견적서 제목 -->
+      <div class="form-group">
+          <label for="f_title"><strong>견적서 제목</strong></label>
+          <input type="text" class="form-control" id="f_title" name="f_title" value="<%= data.kForm.f_title %>">
+      </div>
+      
+      <!-- 견적서 코멘트 -->
+      <div class="form-group">
+          <label for="f_cmt"><strong>견적서 코멘트</strong></label>
+          <textarea class="form-control" id="f_cmt" name="f_cmt"><%= data.kForm.f_cmt %></textarea>
+      </div>
+  
+        <!-- 수정 버튼 -->
+        <div class="form-group">
+            <button type="button" class="btn btn-primary" onclick="updateKForm()">수정</button>
+        </div>
+    </form>
+  </div>
+  
+  <script>
+  function updateKForm() {
+    const f_code = document.getElementById('f_code_updateForm').value; // id를 고유하게 참조
+  
+    const formData = {
+        f_cname: document.getElementById('f_cname').value,
+        f_damdang: document.getElementById('f_damdang').value,
+        f_tel: document.getElementById('f_tel').value,
+        f_date: document.getElementById('f_date').value,
+        f_title: document.getElementById('f_title').value,
+        f_cmt: document.getElementById('f_cmt').value
+    };
+  
+    fetch(`/kformupdate/${f_code}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === "success") {
+            alert(data.message);
+            window.location.reload(); // 현재 페이지를 새로고침
+        } else {
+            alert(data.message);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('데이터 업데이트 중 오류가 발생했습니다.');
+    });
+  }
+  </script>
+  

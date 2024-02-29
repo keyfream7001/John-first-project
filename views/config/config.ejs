@@ -1,0 +1,30 @@
+<%-include('../header.ejs')%>
+<body class="container mt-3">
+
+    <a href="/addcompany" class="btn btn-primary mb-3">공급자 추가</a>
+  
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>회사명</th>
+                <th>사업자번호</th>
+                <th>주소</th>
+            </tr>
+        </thead>
+        <tbody>
+            <% if(configs) { %>
+                <% configs.forEach(function(item){ %> 
+                    <tr>
+                        <td><%= item.c_cname %></td>
+                        <td><%= item.c_sa %></td>
+                        <td><%= item.c_addr %></td>
+                    </tr>
+                </tr>
+                <% }); %>
+                <% } else { %>
+                    <tr><td colspan="9">데이터가 없습니다.</td></tr>
+                  <% } %>
+              </tbody>
+    </table>
+
+<%-include('../footer.ejs')%>

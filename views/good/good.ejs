@@ -1,0 +1,215 @@
+<%-include('../header.ejs')%>
+<body>
+    
+    <div class="container mt-5">
+        <h2 class="mb-4">상품관리</h2>
+
+        <!-- 상품 등록 폼 -->
+        <form action="/good" method="post" class="mb-3">
+            <div class="form-row">
+                <div class="col">
+                    <label for="uid">번호</label>
+                    <input type="text" class="form-control" name="uid" id="uid" readonly>
+                </div>
+                <div class="col">
+                    <label for="g_name">상품명</label>
+                    <input type="text" class="form-control" name="g_name" id="g_name" required>
+                </div>
+                <div class="col">
+                    <label for="g_type1">규격</label>
+                    <input type="text" class="form-control" name="g_type1" id="g_type1">
+                </div>
+                <div class="col">
+                    <label for="g_type2">단위</label>
+                    <input type="text" class="form-control" name="g_type2" id="g_type2">
+                </div>
+                <div class="col">
+                    <label for="g_price">단가</label>
+                    <input type="text" class="form-control" name="g_price" id="g_price">
+                </div>
+                <div class="col">
+                    <label for="g_etc">기타</label>
+                    <input type="text" class="form-control" name="g_etc" id="g_etc">
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary mt-3">등록</button>
+        </form>
+
+        <!-- 상품 목록 테이블 -->
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">상품명</th>
+                    <th scope="col">규격</th>
+                    <th scope="col">단위</th>
+                    <th scope="col">단가</th>
+                    <th scope="col">기타</th>
+                    <th scope="col">등록일</th>
+                    <th scope="col">삭제</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <% if (kgoods && kgoods.length > 0) { %>
+                    <% kgoods.forEach(function(item){ %> 
+                        <tr>
+                            <td><input type="text" id="g_name_<%= item.uid %>" value="<%= item.g_name %>"></td>
+                            <td><input type="text" id="g_type1_<%= item.uid %>" value="<%= item.g_type1 %>"></td>
+                            <td><input type="text" id="g_price_<%= item.uid %>" value="<%= item.g_price %>"></td>
+                            <td><input type="text" id="g_type2_<%= item.uid %>" value="<%= item.g_type2 %>"></td>
+                            <td><input type="text" id="g_etc_<%= item.uid %>" value="<%= item.g_etc %>"></td>
+                            <td><button onclick="updateGood('<%= item.uid %>')">수정</button></td>
+                            <td><button onclick="deleteGood('<%= item.uid %>')">삭제</button></td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="7">데이터가 없습니다.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+
+<!-- 상품 목록 테이블 아래에 페이지네이션 컨테이너 추가 -->
+<div class="mt-4">
+    <nav aria-label="Page navigation example">
+        <ul class="pagination" id="pagination">
+            <!-- 페이지네이션 링크는 여기에 동적으로 생성됩니다 -->
+        </ul>
+    </nav>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            loadGoods(); // 페이지 로드 시 상품 목록과 페이지네이션 로드
+        
+            document.getElementById('tableBody').addEventListener('click', function(e) {
+                if (e.target.classList.contains('update-btn')) {
+                    const uid = e.target.getAttribute('data-uid');
+                    updateGood(uid);
+                } else if (e.target.classList.contains('delete-btn')) {
+                    const uid = e.target.getAttribute('data-uid');
+                    deleteGood(uid);
+                }
+            });
+        });
+        
+        function updateGood(uid) {
+            const g_name = document.querySelector(`#g_name_${uid}`).value;
+            const g_type1 = document.querySelector(`#g_type1_${uid}`).value;
+            const g_price = document.querySelector(`#g_price_${uid}`).value;
+            const g_type2 = document.querySelector(`#g_type2_${uid}`).value;
+            const g_etc = document.querySelector(`#g_etc_${uid}`).value;
+        
+            fetch(`/kgooduid/${uid}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ g_name, g_type1, g_price, g_type2, g_etc }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('상품이 성공적으로 수정되었습니다.');
+                loadGoods(); // 수정 후 상품 목록 다시 로드
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function deleteGood(uid) {
+            fetch(`/kgooddelete/${uid}`, {
+                method: 'DELETE'
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('상품이 성공적으로 삭제되었습니다.');
+                loadGoods(); // 삭제 후 상품 목록 다시 로드
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        function loadGoods(page = 1) {
+    console.log(`loadGoods 함수 호출됨. 요청 페이지: ${page}`); // 현재 요청 페이지 로그
+    fetch(`/api/v1/kgood?page=${page}`)
+    .then(response => response.json())
+    .then(data => {
+        console.log('서버로부터 받은 데이터:', data); // 서버 응답 데이터 로깅
+        const tableBody = document.getElementById('tableBody');
+        if (!tableBody) {
+            console.error('tableBody 요소를 찾을 수 없습니다.'); // tableBody 요소 검증
+            return;
+        }
+        tableBody.innerHTML = ''; // 기존 데이터를 지우고 새 데이터로 테이블을 업데이트
+        data.data.forEach(item => {
+            console.log('처리 중인 항목:', item); // 반복 처리 중인 각 항목 로깅
+            const row = `<tr>
+                <td><input type="text" id="g_name_${item.uid}" value="${item.g_name}"></td>
+                <td><input type="text" id="g_type1_${item.uid}" value="${item.g_type1}"></td>
+                <td><input type="text" id="g_price_${item.uid}" value="${item.g_price}"></td>
+                <td><input type="text" id="g_type2_${item.uid}" value="${item.g_type2}"></td>
+                <td><input type="text" id="g_etc_${item.uid}" value="${item.g_etc}"></td>
+                <td><button class="btn btn-primary update-btn" data-uid="${item.uid}">수정</button></td>
+                <td><button class="btn btn-danger delete-btn" data-uid="${item.uid}">삭제</button></td>
+            </tr>`;
+            tableBody.innerHTML += row; // HTML에 새로운 행 추가
+        });
+        
+        console.log('테이블 업데이트 완료'); // 테이블 업데이트 완료 로깅
+        updatePagination(data.pages, data.currentPage); // 페이지네이션 업데이트, 수정된 부분
+    })
+    .catch(error => {
+        console.error('Error:', error); // 오류 로깅
+    });
+}
+        
+
+function updatePagination(pages, currentPage) {
+            const paginationElement = document.getElementById('pagination');
+            paginationElement.innerHTML = '';
+
+            // 처음 페이지 버튼
+            addPageItem(paginationElement, '처음', 1, currentPage > 1);
+
+            // 이전 페이지 계산
+            const prevPage = currentPage - 1 > 1 ? currentPage - 1 : 1;
+            addPageItem(paginationElement, '이전', prevPage, currentPage > 1);
+
+            // 페이지 번호 표시
+            const startPage = Math.max(currentPage - 5, 1);
+            const endPage = Math.min(startPage + 9, pages);
+            for (let i = startPage; i <= endPage; i++) {
+                addPageItem(paginationElement, i, i, i !== currentPage);
+            }
+
+            // 다음 페이지 계산
+            const nextPage = currentPage + 1 < pages ? currentPage + 1 : pages;
+            addPageItem(paginationElement, '다음', nextPage, currentPage < pages);
+
+            // 마지막 페이지 버튼
+            addPageItem(paginationElement, '마지막', pages, currentPage < pages);
+        }
+
+        function addPageItem(paginationElement, text, page, enabled) {
+            const pageItem = document.createElement('li');
+            pageItem.className = `page-item ${!enabled ? 'disabled' : ''}`;
+            const pageLink = document.createElement('a');
+            pageLink.className = 'page-link';
+            pageLink.href = '#';
+            pageLink.textContent = text;
+            pageLink.addEventListener('click', (e) => {
+                e.preventDefault();
+                if (enabled) {
+                    loadGoods(page);
+                }
+            });
+            pageItem.appendChild(pageLink);
+            paginationElement.appendChild(pageItem);
+        }
+
+        </script>
+        
+        
+
+
+
+
+
+<%-include('../footer.ejs')%>

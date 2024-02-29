@@ -1,0 +1,35 @@
+<%-include('../header.ejs')%>
+<body class="container mt-3">
+
+    <form action="/addcompany" method="post">
+        <h2 class="mb-4">공급자 설정</h2>
+        <hr>
+
+        <ul class="list-unstyled">
+            <li class="form-group">사업자번호: <input type="text" class="form-control" name="c_sa" required></li>
+            <li class="form-group">상호: <input type="text" class="form-control" name="c_cname"></li>
+            <li class="form-group">대표자: <input type="text" class="form-control" name="c_ceo"></li>
+            <li class="form-group">연락처: <input type="text" class="form-control" name="c_tel"></li>
+            <li class="form-group">FAX: <input type="text" class="form-control" name="c_fax"></li>
+            <li class="form-group">주소: <input type="text" class="form-control" name="c_addr"></li>
+            <li class="form-group">업태: <input type="text" class="form-control" name="c_type1"></li>
+            <li class="form-group">종목: <input type="text" class="form-control" name="c_type2"></li>
+            <li class="form-group">도장: <button class="btn btn-secondary" name="c_dojang">파일 업로드</button></li>
+            <li class="form-group">내용 <textarea class="form-control" name="c_footer" cols="50" rows="5"></textarea></li>
+        </ul>
+
+        <br>
+
+        <h2 class="mb-4">카카오톡 설정</h2>
+        <hr>
+
+        <ul class="list-unstyled">
+            <li class="form-group">제목: <input type="text" class="form-control" name="k_title"></li>
+            <li class="form-group">설명: <input type="text" class="form-control" name="k_desc"></li>
+            <li class="form-group">도장: <button class="btn btn-secondary" name="c_dojang">파일 업로드</button></li>
+        </ul>
+
+        <button type="submit" class="btn btn-primary">신규 공급자 등록</button>
+    </form>
+
+  <%-include('../footer.ejs')%>

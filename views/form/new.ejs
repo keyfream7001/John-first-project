@@ -1,0 +1,49 @@
+<%- include('../header.ejs'); %>
+<body>
+    <div class="container mt-5">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <form action="/new" method="post">
+                    <div class="form-group">
+                        <label for="configSelect">공급처</label>
+                        <select class="form-control" id="configSelect" name="configSelect">
+                            <% configs.forEach(function(item) { %>
+                                <option value="<%= item.uid %>"><%= item.c_cname %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="f_cname">거래처명</label>
+                        <input type="text" class="form-control" id="f_cname" name="f_cname">
+                    </div>
+                    <div class="form-group">
+                        <label for="f_tel">연락처</label>
+                        <input type="text" class="form-control" id="f_tel" name="f_tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="f_damdang">담당자</label>
+                        <input type="text" class="form-control" id="f_damdang" name="f_damdang">
+                    </div>
+                    <div class="form-group">
+                        <label for="f_date">견적일</label>
+                        <input type="date" class="form-control" id="f_date" name="f_date">
+                    </div>
+                    <div class="form-group">
+                        <label for="f_title">견적서 제목</label>
+                        <input type="text" class="form-control" id="f_title" name="f_title">
+                    </div>
+                    <div class="form-group">
+                        <label for="f_cmt">견적서 코멘트</label>
+                        <textarea class="form-control" id="f_cmt" name="f_cmt"></textarea>
+                    </div>
+                    <!-- 추가 필드들이 여기에 들어가야 합니다. -->
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">신규등록</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    <%-include('../footer.ejs')%>

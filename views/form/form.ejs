@@ -1,0 +1,125 @@
+<%-include('../header.ejs')%>
+<body>
+  <a href="/new">
+    <button type="button" class="btn btn-primary">견적서 등록</button>
+  </a>
+  
+  <h1>견적서 리스트</h1>
+  <table class="table table-dark" border="1">
+    <thead>
+      <tr>
+        <th>번호</th>
+        <th>거래처명</th>
+        <th>담당자</th>
+        <th>URL</th>
+        <th>PDF</th>
+        <th>이미지</th>
+        <th>카카오톡</th>
+        <th>견적일</th>
+        <th>견적확인날짜</th>
+      </tr>
+    </thead>
+    <tbody id="tableBody">
+      <% if(forms && forms.length > 0) { %>
+      <% forms.forEach(function(item) { %>
+        <tr onclick="window.location.href='http://localhost:3000/view?f_code=<%= item.f_code %>'">
+          <td><%= item.uid %></td>
+          <td><%= item.f_cname %></td>
+          <td><%= item.f_damdang %></td>
+          <td><a href="<%= item.f_url %>">링크</a></td>
+          <td><button>PDF</button></td>
+          <td><button>이미지</button></td>
+          <td><button>카카오톡</button></td>
+          <td><%= item.f_date %></td>
+          <td><%= item.f_open %></td>
+        </tr>
+      <% }); %>
+      <% } else { %>
+          <tr><td colspan="9">데이터가 없습니다.</td></tr>
+      <% } %>
+    </tbody>
+  </table>
+
+  <nav aria-label="Page navigation">
+    <ul class="pagination" id="pagination"></ul>
+  </nav>
+  
+  <script>
+  function fetchPageData(page) {
+    fetch(`/api/v1/kform?page=${page}`)
+      .then(response => response.json())
+      .then(data => {
+        updateTable(data.data); // 테이블 데이터 갱신
+        updatePagination(data.pages, page); // 페이지네이션 갱신
+      })
+      .catch(error => console.error('Error:', error));
+  }
+
+  function updateTable(data) {
+    const tableBody = document.getElementById('tableBody');
+    tableBody.innerHTML = ''; // 테이블 내용 초기화
+    data.forEach(item => {
+      const row = `<tr onclick="window.location.href='http://localhost:3000/view?f_code=${item.f_code}'">
+        <td>${item.uid}</td>
+        <td>${item.f_cname}</td>
+        <td>${item.f_damdang}</td>
+        <td><a href="${item.f_url}">링크</a></td>
+        <td><button>PDF</button></td>
+        <td><button>이미지</button></td>
+        <td><button>카카오톡</button></td>
+        <td>${item.f_date}</td>
+        <td>${item.f_open}</td>
+      </tr>`;
+      tableBody.innerHTML += row;
+    });
+  }
+
+  function updatePagination(totalPages, currentPage) {
+    const paginationElement = document.getElementById('pagination');
+    paginationElement.innerHTML = ''; // 페이지네이션 초기화
+    
+    const maxPages = 10; // 한 번에 표시할 최대 페이지 수
+    const startPage = Math.floor((currentPage - 1) / maxPages) * maxPages + 1; // 현재 페이지 그룹의 시작 페이지
+    const endPage = Math.min(startPage + maxPages - 1, totalPages); // 현재 페이지 그룹의 마지막 페이지
+
+    // "처음" 버튼
+    appendPaginationButton(paginationElement, '처음', 1, currentPage > 1);
+
+    // "이전" 버튼 (10페이지 단위 이동)
+    appendPaginationButton(paginationElement, '이전', Math.max(1, startPage - 1), currentPage > 1);
+
+    // 페이지 번호 버튼
+    for (let i = startPage; i <= endPage; i++) {
+        appendPaginationButton(paginationElement, i, i, true, currentPage === i);
+    }
+
+    // "다음" 버튼 (10페이지 단위 이동)
+    appendPaginationButton(paginationElement, '다음', Math.min(totalPages, endPage + 1), currentPage < totalPages);
+
+    // "마지막" 버튼
+    appendPaginationButton(paginationElement, '마지막', totalPages, currentPage < totalPages);
+}
+
+function appendPaginationButton(container, text, page, enabled, isActive=false) {
+    const li = document.createElement('li');
+    li.className = 'page-item' + (isActive ? ' active' : '') + (!enabled ? ' disabled' : '');
+    const a = document.createElement('a');
+    a.className = 'page-link';
+    a.href = '#';
+    a.textContent = text;
+    if (enabled) {
+        a.addEventListener('click', function(e) {
+            e.preventDefault();
+            fetchPageData(page);
+        });
+    }
+    li.appendChild(a);
+    container.appendChild(li);
+}
+
+  // 초기 페이지 데이터 로드
+  fetchPageData(1);
+  </script>
+</body>
+  
+<%-include('../footer.ejs')%>

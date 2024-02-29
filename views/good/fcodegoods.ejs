@@ -1,0 +1,63 @@
+    <!-- <h2>kForm 데이터</h2>
+    <p>거래처명: <%= data.kForm.f_cname %>, 견적일: <%= data.kForm.f_date %></p>
+
+    <h2>kConfig 데이터</h2>
+    <% data.kConfig.forEach(function(config) { %>
+        <div>
+            <h3><%= config.c_cname %></h3>
+            <p>CEO: <%= config.c_ceo %>, 전화번호: <%= config.c_tel %></p>
+        </div>
+    <% }); %>
+
+    <h2>kGood 데이터</h2>
+    <% data.kGood.forEach(function(good) { %>
+        <div>
+            <h3><%= good.g_name %></h3>
+            <p>가격: <%= good.g_price %>, 유형: <%= good.g_type1 %></p>
+        </div>
+    <% }); %>
+    <h2>kFormGood 데이터</h2>
+<% data.kFormGood.forEach(function(formGood) { %>
+    <div>
+        <h3><%= formGood.g_name %></h3>
+        <p>수량: <%= formGood.g_ea%>, 단가: <%= formGood.g_price %></p>
+    </div>
+<% }); %> -->
+
+    <h1>상품 리스트</h1>
+    <form method="POST" action="/updateGood"> <!-- 수정된 데이터를 처리할 서버의 경로 -->
+        <table class="table table-dark">
+            <thead>
+                <tr>
+                    <th>상품명</th>
+                    <th>규격</th>
+                    <th>단가</th>
+                    <th>수량</th>
+                    <th>단위</th>
+                    <th>저장</th> <!-- '수정' 대신 '저장'으로 변경 -->
+                    <th>삭제</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if(data.kFormGood && data.kFormGood.length > 0) { %>
+                    <% data.kFormGood.forEach(function(formGood, index) { %>
+                        <tr>
+                            <td><input type="text" name="g_name_<%= index %>" value="<%= formGood.g_name %>"></td>
+                            <td><input type="text" name="g_type1_<%= index %>" value="<%= formGood.g_type1 %>"></td>
+                            <td><input type="number" name="g_price_<%= index %>" value="<%= formGood.g_price %>"></td>
+                            <td><input type="number" name="g_ea_<%= index %>" value="<%= formGood.g_ea %>"></td>
+                            <td><input type="text" name="g_etc_<%= index %>" value="<%= formGood.g_etc %>"></td>
+                            <td><button type="button" onclick="saveGood('<%= formGood.uid %>', '<%= index %>')">저장</button></td>
+                            <td><button type="button" onclick="deleteGood('<%= formGood.uid %>')">삭제</button></td>
+                        </tr>
+                    <% }); %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="7">데이터가 없습니다.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+    </table>
+
+
+ 
