@@ -21,3 +21,21 @@
     </form>
 </div>
 
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // '수량 입력' 필드를 선택합니다.
+        const quantityInput = document.getElementById('quantity');
+    
+        // '수량 입력' 필드에 keypress 이벤트 리스너를 추가합니다.
+        quantityInput.addEventListener("keypress", function(e) {
+            // 눌린 키가 엔터키인지 확인합니다.
+            if (e.key === "Enter") {
+                // 기본 이벤트를 방지합니다.
+                e.preventDefault();
+                // 상품 등록 버튼을 선택하고 클릭 이벤트를 발생시킵니다.
+                const submitButton = document.querySelector('button[type="submit"]');
+                submitButton.click();
+            }
+        });
+    });
+    </script>

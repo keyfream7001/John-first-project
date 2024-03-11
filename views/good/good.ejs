@@ -80,6 +80,34 @@
 </div>
 
     <script>
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+            // 페이지 로드 시 실행될 함수들
+            loadGoods();
+
+            
+            // 엔터키 이벤트를 입력 필드에 추가하여 수정 작업 트리거
+            document.getElementById('tableBody').addEventListener('keydown', function(event) {
+                if (event.key === "Enter") {
+                    event.preventDefault();
+                    const uid = event.target.id.match(/\d+/)[0];
+                    updateGood(uid);
+                }
+            });
+
+            // 수정 및 삭제 버튼 클릭 이벤트 처리
+            document.getElementById('tableBody').addEventListener('click', function(e) {
+                const uid = e.target.dataset.uid;
+                if (e.target.classList.contains('update-btn')) {
+                    updateGood(uid);
+                } else if (e.target.classList.contains('delete-btn')) {
+                    deleteGood(uid);
+                }
+            });
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             loadGoods(); // 페이지 로드 시 상품 목록과 페이지네이션 로드
         
@@ -204,6 +232,8 @@ function updatePagination(pages, currentPage) {
             paginationElement.appendChild(pageItem);
         }
 
+
+    
         </script>
         
         

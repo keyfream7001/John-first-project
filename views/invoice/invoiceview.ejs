@@ -24,14 +24,18 @@
     </div>
 <% }); %> -->
 
+
+
     <div class="container mt-5">
         <div class="border border-dark p-4">
             <div class="row mb-4">
-                <div class="col-md-6">
-                    <h1 class="font-weight-bold"><%= data.kForm.f_title %></h1>
-                    <p>제<%= data.kForm.f_code %>호 견적서를 발행합니다.</p>
+                <div class="col-md-5">
+                    <br>
+                    <p style="text-align: center;"><%= data.kForm.f_date %></p>
+                    <h1 style="text-align: center;" class="font-weight-bold"><%= data.kForm.f_title %></h1>
+                    <p style="text-align: center;">제<%= data.kForm.f_code %>호 견적서를 발행합니다.</p>
                 </div>
-                <div class="col-md-6 text-right">
+                <!-- <div class="col-md-6 text-right">
                     <p>견적일자: <strong><%= data.kForm.f_date %></strong></p>
                     <% if(data.kConfig && data.kConfig.length > 0) { %>
                     <p>사업자번호: <%= data.kConfig[0].c_sa %></p>
@@ -47,7 +51,46 @@
                     <p>공급자 정보가 없습니다.</p>
                     <% } %>
                 </div>
-            </div>
+            </div> -->
+            <div class="col-md-7 text-center">
+                <table class="table table-bordered">
+                  <tbody>
+                    <tr>
+                        <td rowspan="7" class="text-center vertical-align-middle">
+                            <div class="text-red fw-bold fs-4"><br><br>공<br><br>급<br><br>자</div>
+                          </td>
+                      <th scope="row">사업자번호</th>
+                      <td colspan="4"><%= data.kConfig[0].c_sa %></td>
+
+                    </tr>
+
+                    <tr>
+                        <th scope="row">공급자</th>
+                        <td><%= data.kConfig[0].c_cname %></td>                    
+                        <th scope="row">대표명</th>
+                        <td><%= data.kConfig[0].c_ceo %></td>
+                      </tr>
+
+                    <tr>
+                      <th scope="row">주소</th>
+                      <td colspan="4"><%= data.kConfig[0].c_addr %></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">업태</th>
+                      <td><%= data.kConfig[0].c_type1 %></td>
+                      <th scope="row">종목</th>
+                      <td><%= data.kConfig[0].c_type2 %></td>
+                    </tr>
+                    <tr>
+                      <th scope="row">TEL</th>
+                      <td><%= data.kConfig[0].c_tel %></td>
+                      <th scope="row">FAX</th>
+                      <td><%= data.kConfig[0].c_fax %></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              
             <!-- 테이블 시작 -->
             <div class="table-responsive">
                 <table class="table table-bordered text-center">
@@ -81,7 +124,7 @@
                                 <td><%= item.g_name %></td>
                                 <td><%= item.g_type1 %></td>
                                 <td><%= item.g_type2 %></td>
-                                <td><%= item.g_price.toLocaleString() %></td>
+                                <td><%= Number(item.g_price).toLocaleString() %></td>
                                 <td><%= item.g_ea %></td>
                                 <td><%= (item.g_price * item.g_ea).toLocaleString() %></td>
                                 <td><%= (item.g_price * item.g_ea * 0.1).toLocaleString() %></td>

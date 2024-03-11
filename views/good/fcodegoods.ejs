@@ -61,3 +61,27 @@
 
 
  
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 모든 입력 필드를 선택합니다.
+        const inputs = document.querySelectorAll('input[type="text"], input[type="number"]');
+
+        // 각 입력 필드에 대해 함수를 실행합니다.
+        inputs.forEach(function(input) {
+            // 입력 필드에 keypress 이벤트 리스너를 추가합니다.
+            input.addEventListener("keypress", function(e) {
+                // 눌린 키가 엔터키인지 확인합니다.
+                if (e.key === "Enter") {
+                    // 기본 이벤트를 방지합니다.
+                    e.preventDefault();
+                    // '저장' 버튼을 찾습니다. 가장 가까운 tr 요소 내의 '저장' 버튼을 선택합니다.
+                    const saveButton = input.closest('tr').querySelector('button[onclick*="saveGood"]');
+                    // '저장' 버튼이 있으면 클릭 이벤트를 발생시킵니다.
+                    if (saveButton) {
+                        saveButton.click();
+                    }
+                }
+            });
+        });
+    });
+</script>

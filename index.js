@@ -146,6 +146,9 @@ app.post('/good', postKgoodController.create);
 app.post('/addcompany', postsConfigController.create);
 app.post('/new', postsKformController.create);
 app.post('/goodSelector' ,postKgoodController.registerProduct);
+
+
+
 app.delete('/gooddelete/:uid', postKformgoodController.delete);
 app.delete('/kgooddelete/:uid' ,postKgoodController.delete);
 app.put('/goodupdate/:uid', postKformgoodController.update);
